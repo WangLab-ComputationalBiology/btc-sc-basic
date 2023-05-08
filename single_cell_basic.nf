@@ -48,7 +48,7 @@ process DOWNLOAD_HG_INDEX {
 process CUSTOM_REFERENCE {
     /* Description */
 
-    container 'scaligners:1.0'
+    container 'oandrefonseca/scaligners:1.0'
     label "Custom_Reference" 
 
     input:
@@ -83,16 +83,16 @@ process CUSTOM_REFERENCE {
 */
 
 process SAMPLE_ALIGNMENT {
-    /* Description */
+    /* Description --no-bam */
 
-    container 'scaligners:1.0'
+    container 'oandrefonseca/scaligners:1.0'
     label "Sample_Alignment"
 
     tag "Processing ${sample_id}"
     publishDir "${params.project_name}/", mode: 'copyNoFollow'
 
     input:
-        tuple val(sample_id), val(prefix), path(first_read), path(second_read)
+        tuple val(sample_id), path(fastq)
         path(reference)
 
     output:
@@ -102,12 +102,12 @@ process SAMPLE_ALIGNMENT {
         """
         cellranger \\
             count \\
-            --id='${sample_id}' \\
+            --id="${sample_id}" \\
+            --description="${sample_id}" \\
             --fastqs=. \\
-            --transcriptome=${reference} \\
+            --transcriptome="${reference}" \\
             --include-introns=false \\
-            --no-bam \\
-            --sample=${prefix} \\
+            --sample="${sample_id}" \\
             --localcores=${params.cpus} \\
             --localmem=${params.memory}
         """
@@ -121,7 +121,7 @@ process SAMPLE_ALIGNMENT {
 process SAMPLE_CELL_QC {
     /* Description */
 
-    container 'scpackages:1.1'
+    container 'oandrefonseca/scpackages:1.0'
     label "Sample_and_Cell_QC"
 
     tag "QC ${sample_id}"
@@ -175,7 +175,7 @@ process SAMPLE_CELL_QC {
 process QUALITY_TABLE {
     /* Description */
 
-    container 'scpackages:1.1'
+    container 'oandrefonseca/scpackages:1.0'
     label "Quality_table"
     
     publishDir "${params.project_name}", mode: 'copyNoFollow'
@@ -214,7 +214,7 @@ process QUALITY_TABLE {
 process MERGE_AND_NORMALIZE {
     /* Description */
 
-    container 'scpackages:1.1' 
+    container 'oandrefonseca/scpackages:1.0' 
     label "Merge_and_Normalize"
 
     publishDir "${params.project_name}", mode: 'copyNoFollow'
@@ -253,7 +253,7 @@ process MERGE_AND_NORMALIZE {
 
 process BATCH_CORRECTION {
 
-    container 'scpackages:1.1' 
+    container 'oandrefonseca/scpackages:1.0' 
     label "Batch_Correction"
 
     publishDir "${params.project_name}", mode: 'copyNoFollow'
@@ -296,7 +296,7 @@ process BATCH_CORRECTION {
 
 process CELL_CLUSTERING {
   
-    container 'scpackages:1.1' 
+    container 'oandrefonseca/scpackages:1.0' 
     label "Cell_clustering"
 
     publishDir "${params.project_name}", mode: 'copyNoFollow'
@@ -323,6 +323,8 @@ process CELL_CLUSTERING {
             params = list(
                 project_name = "${params.project_name}",
                 project_object = "${project_object}",
+                run_deg = "${params.run_deg}",
+                thr_resolution = ${params.thr_resolution},
                 workdir = here,
                 timestamp = "${workflow.runName}"
 
@@ -378,11 +380,17 @@ workflow {
     samples_channel = Channel.fromPath(params.sample_csv)
                              .splitCsv(header:true)
 
+
+    samples_grouped_channel = samples_channel
+    .map {row -> tuple row.sample, row.fastq_1, row.fastq_2}
+    .groupTuple(by: [0])
+    .map { row -> tuple row[0], row[1 .. 2].flatten() }
+
     // Meta-data path
     meta_channel = Channel.fromPath(params.meta_data)
 
     // Cellranger alignment
-    SAMPLE_ALIGNMENT(samples_channel, DOWNLOAD_HG_INDEX.out.index)
+    SAMPLE_ALIGNMENT(samples_grouped_channel, DOWNLOAD_HG_INDEX.out.index)
 
     cell_matrices_channel = SAMPLE_ALIGNMENT.out.cell_out
     .map{sample, outs -> [sample, outs.findAll {
@@ -434,4 +442,3 @@ workflow.onComplete {
     log.info(workflow.success ? "May the Force be with you!" : "Please check your inputs.")
 
 }
-
