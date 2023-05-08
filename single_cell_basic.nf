@@ -330,7 +330,8 @@ process CELL_CLUSTERING {
 
             ), 
             output_dir = here,
-            output_file = "${params.project_name}_cluster_report.html")           
+            output_file = "${params.project_name}_cluster_report.html"
+            )           
 
         """
 
