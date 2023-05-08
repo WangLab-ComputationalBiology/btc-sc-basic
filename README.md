@@ -69,13 +69,13 @@ export NXF_SINGULARITY_CACHEDIR=$SCRATCH/singularity
 
 The pipeline requires two inputs, a sample table and meta-data. Both files should follow a **mandatory** format as described below.
 
-1. Sample table should be a `csv` with four columns, sample, prefix, fastq_{1,2}. The column `sample` will be associated with all reports across the pipeline. Also, it will be required to combine the meta-data on the Seurat object. Prefix and fastq columns are mandatory for `Cellranger`.
+1. Sample table should be a `csv` with four columns, sample, fastq_{1,2}. The column `sample` will be associated with all reports across the pipeline. Also, it will be required to combine the meta-data on the Seurat object. Prefix and fastq columns are mandatory for `Cellranger`.
 
-|   sample_id  | prefix |  fastq_1 | fastq_2 |
-|:---------:|:------:|:--------:|:-------:|
-| BTC-AA | BTC-AA-001 | path/to/BTC-AA-001_S1_L001_R1_001.fastq.gz | path/to/BTC-AA-001_S1_L001_R2_001.fastq.gz |
-| BTC-AB | BTC-AB-001 | path/to/BTC-AB-001_S1_L001_R1_001.fastq.gz | path/to/BTC-AB-001_S1_L001_R2_001.fastq.gz |
-| BTC-AC | BTC-AC-001 | path/to/BTC-AC-001_S1_L001_R1_001.fastq.gz | path/to/BTC-AC-001_S1_L001_R2_001.fastq.gz |
+|  sample_id | fastq_1 | fastq_2 |
+|:----------:|:-------:|:-------:|
+| BTC-AA | path/to/BTC-AA-001_S1_L001_R1_001.fastq.gz | path/to/BTC-AA-001_S1_L001_R2_001.fastq.gz |
+| BTC-AB | path/to/BTC-AB-001_S1_L001_R1_001.fastq.gz | path/to/BTC-AB-001_S1_L001_R2_001.fastq.gz |
+| BTC-AC | path/to/BTC-AC-001_S1_L001_R1_001.fastq.gz | path/to/BTC-AC-001_S1_L001_R2_001.fastq.gz |
 
 **Important, note the `prefix` column has to match fastq files**
 

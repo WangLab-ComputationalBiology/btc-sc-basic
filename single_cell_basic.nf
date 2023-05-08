@@ -83,7 +83,7 @@ process CUSTOM_REFERENCE {
 */
 
 process SAMPLE_ALIGNMENT {
-    /* Description --no-bam */
+    /* Description */
 
     container 'oandrefonseca/scaligners:1.0'
     label "Sample_Alignment"
