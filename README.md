@@ -1,4 +1,4 @@
-# btc-sc-basic
+# btc-sc-mvp
 
 > **What is a minimum viable product?** A minimum viable product (MVP) is a version of a product with just enough features to be usable by early customers who can then provide feedback for future product development. [1](https://en.wikipedia.org/wiki/Minimum_viable_product)
 
@@ -17,13 +17,13 @@ wget -qO- https://get.nextflow.io | bash
 
 ## 1.1. Docker and Singularity
 
-This tutorial was tested using Docker v20.10.22 and Singularity v3.7.0. Please make sure to have both software available. The `btc-sc-basic` pipeline will require docker images for running.
+This tutorial was tested using Docker v20.10.22 and Singularity v3.7.0. Please make sure to have both software available. The `btc-sc-mvp` pipeline will require docker images for running.
 
-## 2. Cloning `btc-sc-basic`
+## 2. Cloning `btc-sc-mvp`
 
 ```bash
 
-git clone git@github.com:WangLab-ComputationalBiology/btc-sc-basic.git
+git clone git@github.com:WangLab-ComputationalBiology/btc-sc-mvp.git
 
 ``` 
 
@@ -200,7 +200,7 @@ nextflow run single_cell_basic.nf -params-file <PARAMS.json> -resume -profile <P
 
 ## 5. Expected outputs
 
-In a successful execution, the `btc-sc-basic` should create a folder structure similar to the one described below. The files with TIMESTAMP are created based on the nextflow RUN NAME [1](https://www.nextflow.io/docs/latest/tracing.html). Theoretically, it should improve traceability across executions by levering Nextflow properties.
+In a successful execution, the `btc-sc-mvp` should create a folder structure similar to the one described below. The files with TIMESTAMP are created based on the nextflow RUN NAME [1](https://www.nextflow.io/docs/latest/tracing.html). Theoretically, it should improve traceability across executions by levering Nextflow properties.
 
 ```
 
